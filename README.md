@@ -13,7 +13,7 @@ This supports HTTP and HTTPS connections with a configurable port for each.
 - Simple curl GET request
 - Pull SSL certificates
 - Check supported ciphers for a given SSL/TLS endpoint
-- Network configuration info (IP addresses, subnet masks, default gateway, DNS servers)
+- Network configuration info (IP addresses, subnet masks, default gateway)
 
 ## Latest build
 

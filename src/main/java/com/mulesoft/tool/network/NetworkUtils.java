@@ -160,19 +160,7 @@ public class NetworkUtils {
         } catch (IOException e) {
             sb.append("Error: ").append(e.getMessage()).append("\n");
         }
-        
-        // Get DNS configuration
-        sb.append("\n=== DNS Servers ===\n");
-        try {
-            String dns = execute(new ProcessBuilder("cat", "/etc/resolv.conf"));
-            for (String line : dns.split("\n")) {
-                if (line.trim().startsWith("nameserver")) {
-                    sb.append(line.trim()).append("\n");
-                }
-            }
-        } catch (IOException e) {
-            sb.append("Error: ").append(e.getMessage()).append("\n");
-        }
+    
         
         return sb.toString();
     }
