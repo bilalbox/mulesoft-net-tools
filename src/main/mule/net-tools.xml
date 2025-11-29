@@ -230,4 +230,17 @@ NetworkUtils::traceRoute(attributes.queryParams.host)]]></ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
+	<flow name="get:\netinfo:net-tools-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="a006967e-8161-45f9-af3b-d1f3386ae267">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/java
+import java!com::mulesoft::tool::network::NetworkUtils
+---
+NetworkUtils::getNetworkConfiguration()]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
 </mule>

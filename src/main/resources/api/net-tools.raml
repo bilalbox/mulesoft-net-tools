@@ -135,3 +135,12 @@ securitySchemes:
         body: 
           text/plain:
             example: CONNECTED(00000005)
+
+/netinfo:
+  get:
+    description: Prints the network configuration information for the mule runtime     
+    responses: 
+      200:
+        body: 
+          text/plain:
+            example: "=== Network Interfaces ==="
