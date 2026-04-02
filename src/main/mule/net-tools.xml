@@ -230,4 +230,15 @@ NetworkUtils::traceRoute(attributes.queryParams.host)]]></ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="get:\publicip:net-tools-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="b1c8f5e9-3d2a-4b6c-9e1f-8a7c6b4d5e2f">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/java
+import java!com::mulesoft::tool::network::NetworkUtils
+---
+NetworkUtils::getPublicIp()]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
 </mule>

@@ -146,6 +146,7 @@
                     <option value="curl">curl</option>
                     <option value="certest">certificates</option>
                     <option value="ciphertest">ssl ciphers</option>
+                    <option value="publicip">Public IP</option>
                 </select>
                 <input name="ip" placeholder="IP Address or Host" type="text" title="IP" id="ip" />
                 <input name="port" placeholder="Port" type="text" title="PORT" id="port" />
@@ -162,7 +163,8 @@
 			  <div class="helpBox" id="tracerouteHelp" style="display: none;">Set an IP Address or Hostname and hit Run</div>	
               <div class="helpBox" id="socketHelp" style="display: none;">Set an IP Address or Hostname, the Port and hit Run</div>	
 			  <div class="helpBox" id="dnsHelp" style="display: none;">Set a Hostname and hit Run</div>	
-			  <div class="helpBox" id="curlHelp" style="display: none;">Set an IP Address or Schema (http-https://) plus Hostname, the Port, the Path, the Headers (multi-line) and hit Run</div>	
+			  <div class="helpBox" id="curlHelp" style="display: none;">Set an IP Address or Schema (http-https://) plus Hostname, the Port, the Path, the Headers (multi-line) and hit Run</div>
+			  <div class="helpBox" id="publicipHelp" style="display: none;">Click Run to discover your public IP address (useful for CloudHub static IP verification)</div>	
 			</div>
             <pre id="output">
             </pre>
@@ -231,6 +233,9 @@
                         $("#insecure").show();
                         $("#insecure_label").show();
                         break;
+                      case "publicip":
+                        $("#publicipHelp").show();
+                        break;
                     default:
 
                     }
@@ -246,7 +251,7 @@
                     var url = (operation === 'curl') ? $("#url").val() : '';
                     var port = (operation === 'socket' || operation === 'certest' || operation === 'ciphertest') ? $("#port").val() : '';
                     var dnsServer = (operation === 'dns') ? $("#dnsServer").val() : '';                    
-                    if (operation !== 'curl' && !ip) {
+                    if (operation !== 'curl' && operation !== 'publicip' && !ip) {
                         toastr["error"]("Missing IP", "Invalid Arguments")
                         console.error("Missing IP!");
                         return;
@@ -261,18 +266,22 @@
                         console.error('Missing url!');
                         return;
                     }
-                    var apiurl = 'api/' + operation + '?host=' + ip;
-                    if (operation === 'socket' || operation === 'certest' || operation === 'ciphertest') {
-                        apiurl += '&port=' + port;
-                    }
-                    if (operation === 'dns') {
-                        apiurl += '&dnsServer=' + dnsServer;
-                    }
-                    if (operation === 'curl') {
-                        apiurl += '&url=' + encodeURI(url);
+                    var apiurl = 'api/' + operation;
+                    if (operation === 'publicip') {
+                        // No parameters needed for publicip
+                    } else if (operation === 'curl') {
+                        apiurl += '?url=' + encodeURI(url);
                         apiurl += '&insecure=' + $("#insecure").prop('checked');
                         for (let h of $("#headers").val().split('\n')) {
                         	apiurl += '&header=' + encodeURI(h);
+                        }
+                    } else {
+                        apiurl += '?host=' + ip;
+                        if (operation === 'socket' || operation === 'certest' || operation === 'ciphertest') {
+                            apiurl += '&port=' + port;
+                        }
+                        if (operation === 'dns') {
+                            apiurl += '&dnsServer=' + dnsServer;
                         }
                     }
                     console.log(operation + " " + ip + " " + port + " " + url );

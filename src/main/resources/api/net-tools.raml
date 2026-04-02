@@ -135,3 +135,12 @@ securitySchemes:
         body: 
           text/plain:
             example: CONNECTED(00000005)
+
+/publicip:
+  get:
+    description: Retrieves the public IP address of the Mule host by calling an external service
+    responses: 
+      200:
+        body: 
+          text/plain:
+            example: 118.99.117.167

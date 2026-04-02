@@ -13,6 +13,10 @@ import java.util.List;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class NetworkUtils {
 
@@ -116,6 +120,52 @@ public class NetworkUtils {
 			}
 		}
 		return remoteEndpointSupportedCiphers;
+	}
+
+	public static String getPublicIp() throws Exception {
+		try {
+			URL url = new URL("https://httpbin.org/ip");
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			connection.setConnectTimeout(10000);
+			connection.setReadTimeout(10000);
+			
+			int responseCode = connection.getResponseCode();
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				StringBuilder response = new StringBuilder();
+				String line;
+				while ((line = reader.readLine()) != null) {
+					response.append(line);
+				}
+				reader.close();
+				
+				// Parse JSON response to extract IP from { "origin": "118.99.117.167" }
+				String jsonResponse = response.toString();
+				String searchPattern = "\"origin\":";
+				int startIndex = jsonResponse.indexOf(searchPattern);
+				if (startIndex != -1) {
+					startIndex += searchPattern.length();
+					// Skip whitespace and opening quote
+					while (startIndex < jsonResponse.length() && 
+						   (jsonResponse.charAt(startIndex) == ' ' || jsonResponse.charAt(startIndex) == '"')) {
+						startIndex++;
+					}
+					// Find closing quote
+					int endIndex = jsonResponse.indexOf('"', startIndex);
+					if (endIndex != -1) {
+						return jsonResponse.substring(startIndex, endIndex);
+					}
+				}
+				return "Could not parse IP from response: " + jsonResponse;
+			} else {
+				return "HTTP Error: " + responseCode + " - " + connection.getResponseMessage();
+			}
+		} catch (Exception e) {
+			ByteArrayOutputStream b = new ByteArrayOutputStream();
+			e.printStackTrace(new PrintStream(b));
+			return "Error retrieving public IP: " + e.getMessage() + "\n" + b.toString();
+		}
 	}
 
 	private static String execute(ProcessBuilder pb) throws IOException {
