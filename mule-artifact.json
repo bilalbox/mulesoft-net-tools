@@ -1,5 +1,6 @@
 {
-    "minMuleVersion": "4.11.2",
+    "name": "net-tools-api",
+    "minMuleVersion": "4.9.0",
     "javaSpecificationVersions": ["17"],
     "secureProperties": ["pass"]
 }
